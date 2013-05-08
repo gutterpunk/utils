@@ -23,6 +23,7 @@ class MerseneTwister
 	{
 		var i : Int = 1;
 		MT[0] = seed;
+		index = 623;
 		while (i < 624) { // loop over each other element
 			MT[i] = (1812433253 * (MT[i - 1] ^ (MT[i - 1] >>> 30)) + i) & 0xFFFFFFFF; // 0x6c078965
 			i++;
@@ -33,17 +34,18 @@ class MerseneTwister
 	// calling generate_numbers() every 624 numbers
 	public function extract_number():Int
 	{
-		if (index == 0) {
+		if (index < 0) {
 			generate_numbers();
+			index = 623;
 		}
 
-		var y : Int = MT[index];
+		var y : Int = MT[623 - index];
 		y ^= (y >>> 11);
 		y ^= ((y << 7) & 0x9d2c5680);
 		y ^= ((y << 15) & 0xefc60000);
 		y ^= (y >>> 18);
 
-		index = (index + 1) % 624;
+		index --;
 		return y;
 	}
 
@@ -53,8 +55,8 @@ class MerseneTwister
 		var i : Int = 0;
 		while (i < 623)
 		{
-			var y : Int = (MT[i] & 0x80000000)                       // bit 31 (32nd bit) of MT[i]
-						+ (MT[(i + 1) % 624] & 0x7fffffff);   		 // bits 0-30 (first 31 bits) of MT[...]
+			var y : Int = (MT[i] & 0x80000000)						// bit 31 (32nd bit) of MT[i]
+						+ (MT[(i + 1) % 624] & 0x7fffffff);			// bits 0-30 (first 31 bits) of MT[...]
 			MT[i] = MT[(i + 397) % 624] ^ (y >>> 1);
 			if ((y % 2) != 0) { // y is odd
 				MT[i] = MT[i] ^ 0x9908b0df;
