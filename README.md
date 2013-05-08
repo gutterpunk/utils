@@ -1,4 +1,3 @@
-utils
-=====
+Mersene twister based on the pseudocode at http://en.wikipedia.org/wiki/Mersenne_twister
 
-Utilities for Haxe
+Extension added to return floats, and to allow for usage of the instance to generate numbers
